@@ -1,77 +1,72 @@
 <html>
 <body>
-    
 <head>
-    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-
 <header>
-    <h1>Earthquake Info</h1>
+<h1>Weather Info</h1>
 </header>
 
 <form method="post">
-    Start Time: <input type="text" id="starttime" value="2019-01-01"> <br><br>
-    End Time: <input type="text" id="endtime" value="2019-02-15"> <br><br>
-    Latitude: <input type="text" id="latitude" value="36.6"> <br><br>
-    Longitude: <input type="text" id="longitude" value="-121.9"> <br><br>
-    Max Radius: <input type="text" id="maxradius" value="10"> <br><br>
-    Magnitud (0 to 7): <input type="range" id="minmag" min="0" value="3" max="7"> <br><br>
+Zip Code: <input type="text" id="zip"> <br><br>
 </form>
-Change any value to update results.<br><br>
+Change the value to update results.<br><br>
 
-<div id = "error"> </div>
-<div id="earthquakeResult"></div>
+<div id="weatherResult"></div>
 
 <script>
+/*global $*/
+//https://api.openweathermap.org/data/2.5/weather?q=Salinas&appid=d2e7b28bd9070cb5add3e6aae39a5949     
+$("input").change(getWeather);
 
-    $("input").change(getEarthquakes);
-    
-    function getEarthquakes() 
-    { 
-        $.ajax({
-            type: "get",
-            url: "https://earthquake.usgs.gov/fdsnws/event/1/query",
-            dataType: "json",
-            data: 
-            {
-                "format":"geojson",
-                "starttime":$("#starttime").val(),
-                "endtime" :$("#endtime").val(),
-                "latitude" :$("#latitude").val(),
-                "longitude":$("#longitude").val(),
-                "maxradius":$("#maxradius").val(),
-                "minmag" :$("#minmag").val()
-            },
-            success: function(data,status) 
-            {
-                if (!data)
-                {
-                    $("#error").html("No results!");
-                }
-                else
-                {
-                    $("#error").html("");
-                    $("#earthquakeResult").html("");
-                    $('#earthquakeResult').html(data["metadata"].title + "<br>");
-                    for (var i=0; i < data['features'].length; i++) 
-                    {
-                        $("#earthquakeResult").append(data['features'][i]['properties']["mag"] + " - " + data['features'][i]['properties'].place + "<br/>");
-                    }   
-                }
-            },
-        });
+function getWeather() 
+{ 
+    $.ajax
+    ({
+    type: "get",
+    url: "https://api.openweathermap.org/data/2.5/weather?zip=93933&appid=d2e7b28bd9070cb5add3e6aae39a5949",
+    dataType: "json",
+    data: {
+    "name": $("#name").val(),
+    "temp": $("#main.temp").val(),
+    "weather": $("#weather").val(),
+    },
+    success: function(data,status) 
+    {
+        if (!data)
+        {
+            $('#weatherResult').html("Error");
+        }
+        else
+        {
+            $('#weatherResult').html(data.name);
+            $('#weatherResult').html(data.temp);
+            $('#weatherResult').html(data.weather.main);
+        }  
     }
+    });
+}
 
 </script>
-
+<style>
+    body
+    {
+        background-color:powderblue;
+        text-align:center;
+    }
+    .weatherResult
+    {
+        color:black;
+    }
+    header
+    {
+        background-color:yellow;
+        justify-content:center;
+    }
+    
+</style>
 </body>
 
 </html>
-
-<style> 
-body
-{
-    text-align:center;
-    background-color:powderblue;
-}
-</style>
